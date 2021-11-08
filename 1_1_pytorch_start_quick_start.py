@@ -121,7 +121,7 @@ def test(dataloader, model, loss_fn):
             X, y = X.to(device), y.to(device)
             pred = model(X)
             test_loss += loss_fn(pred, y).item()
-            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+            correct += (pred.argmax(1) == y).type(torch.float).sum().item() # max value index predict 후, y와 비교
     test_loss /= num_batches
     correct /= size
     print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
@@ -134,3 +134,44 @@ for t in range(epochs):
 print("Done!")
 
 
+# 모델 저장하기
+"""
+일반적인 모델 저장 방법
+
+
+모델의 매개변수들을 포함하여 internal state dictorionary를 serialize 하는 것
+serialize :  데이터 구조나 오브젝트 상태를 동일하거나 다른 컴퓨터 환경에 저장하고 나중에 재구성할 수 있는 포맷으로 변환하는 과정
+"""
+
+torch.save(model.state_dict(), "model.pth")
+print("Saved PyTorch Model State to model.pth")
+
+
+# 모델 불러오기
+
+model = NeuralNetwork()
+model.load_state_dict(torch.load("model.pth"))
+
+
+# 모델 불러온 후 예층 가능
+
+
+classes = [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot",
+]
+
+model.eval()
+x, y = test_data[0][0], test_data[0][1] # x : image, y : label
+with torch.no_grad():
+    pred = model(x)
+    predicted, actual = classes[pred[0].argmax(0)], classes[y]
+    print(f'Predicted: "{predicted}", Actual: "{actual}"')
