@@ -13,7 +13,7 @@ ds = datasets.FashionMNIST(
     train=True,
     download=True,
     transform=ToTensor(), # normalize
-    target_transform=Lambda(lambda y: torch.zeros(10, dtype=torch.float).scatter_(0, torch.tensor(y), value=1)) # one-hot vector
+    target_transform=Lambda(lambda y: torch.zeros(10, dtype=torch.float).scatter_(0, torch.tensor(y), value=1)) # one-hot vecto
 )
 
 # transform 안했을 때
@@ -24,9 +24,16 @@ ds_ori = datasets.FashionMNIST(
 )
 
 import numpy as np
-print("No transform")
-print(ds_ori[0][0])
+print("No transform IMG")
+print(np.array(ds_ori[0][0]))
+
+print("No transform Label")
+print(ds_ori[0][1])
 
 
-print("---------")
+print("------------------------")
+print("Transform IMG")
 print(ds[0][0])
+
+print("Transform Label")
+print(ds[0][1])
